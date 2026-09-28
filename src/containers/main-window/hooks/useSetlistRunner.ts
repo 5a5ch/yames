@@ -38,6 +38,8 @@ export type SetlistRunner = {
   remaining: ReturnType<typeof stepRemaining>;
   /** Move on at the next downbeat — the manual trigger, and skip-ahead. */
   skip: () => void;
+  jump: (index: number) => void;
+
   /** The jam the step now playing is, or null. For the player's readout. */
   jam: Jam | null;
 };
@@ -354,6 +356,11 @@ export function useSetlistRunner(
   }, [isPlaying, currentBeat?.chorus, currentBeat?.formBar]);
 
   const skip = useCallback(() => dispatch({ kind: "advance" }), [dispatch]);
+  const jump = useCallback(
+  (index: number) =>
+    dispatch({ kind: "jump", index, seconds: runClock() }),
+  [dispatch, runClock],
+  );
 
   const step = setlist?.steps[state.stepIndex] ?? null;
   const live = runClock() - state.stepStartedAt;
@@ -364,6 +371,7 @@ export function useSetlistRunner(
     stepCount: setlist?.steps.length ?? 0,
     remaining: setlist ? stepRemaining(setlist, state, live) : null,
     skip,
+    jump,
     jam: playingJam,
   };
 }

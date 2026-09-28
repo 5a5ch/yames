@@ -1104,12 +1104,42 @@ export function MainWindow() {
     return () => document.removeEventListener("mousedown", handler);
   }, [soundOpen]);
 
+  const handleSetlistStep = useCallback(
+  (index: number) => {
+    const setlist = setlistSession.setlist;
+    const targetStep = setlist?.steps[index];
+
+    if (!setlist || !targetStep) return;
+
+    const runningIndex = setlistSession.runningIndex;
+
+    if (state.isPlaying) {
+      if (runningIndex === index) {
+        void togglePlayback();
+      } else {
+        setlistSession.runner.jump(index);
+      }
+      return;
+    }
+
+    setlistSession.selectStep(targetStep.id);
+    void togglePlayback();
+  },
+  [
+    setlistSession.setlist,
+    setlistSession.runningIndex,
+    setlistSession.runner.jump,
+    setlistSession.selectStep,
+    state.isPlaying,
+  ],
+);
   // Shared action dispatcher — called by keyboard handler and gamepad hook
   const dispatchAction = useActionDispatcher({
     view,
     setView,
     prevTab,
     setlistLoaded: !!setlistSession.setlist,
+    onSetlistStep: handleSetlistStep,
     jamLoaded: !!jamSession.jam,
     jamEditorOpen: jamSession.screen.editorOpen,
     onToggleJam: toggleJamPlayback,
