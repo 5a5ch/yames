@@ -35,6 +35,7 @@ export type HotkeyAction =
   | "tab-2"
   | "tab-3"
   | "tab-4"
+  | `setlist-step-${number}`
   // Jam, hands-free (JAM_MODE §4.7). These exist so a MIDI footswitch can
   // reach them: your hands are on the instrument, which is the whole point of
   // playing over a band rather than setting one up.
@@ -56,7 +57,7 @@ export interface HotkeyEntry {
   id: HotkeyAction;
   desc: string;
   globalAllowed?: boolean;
-  group: "metronome" | "view" | "navigation" | "jam";
+  group: "metronome" | "view" | "navigation" | "setlist" | "jam";
 }
 
 export const IS_MAC = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
@@ -330,6 +331,14 @@ export const HOTKEYS: HotkeyEntry[] = [
     desc: "Open or close the practice coach panel",
     group: "navigation",
   },
+
+    ...Array.from({ length: 30 }, (_, index): HotkeyEntry => ({
+    id: `setlist-step-${index + 1}` as HotkeyAction,
+    action: `Setlist Step ${index + 1}`,
+    key: "",
+    desc: `Start or stop setlist step ${index + 1}`,
+    group: "setlist",
+  })),
   /**
    * Jam, hands-free.
    *
@@ -425,6 +434,7 @@ export const HOTKEY_GROUPS: { key: string; label: string }[] = [
   { key: "metronome", label: "Metronome" },
   { key: "view", label: "View" },
   { key: "navigation", label: "Navigation" },
+  { key: "setlist", label: "Setlist" },
   { key: "jam", label: "Jam" },
 ];
 

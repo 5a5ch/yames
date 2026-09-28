@@ -77,6 +77,7 @@ export type SetlistEvent =
   | { kind: "beat"; isDownbeat: boolean; seconds: number }
   /** A manual trigger, or the transport's skip-ahead. (U9.2, U9.7) */
   | { kind: "advance" }
+  | { kind: "jump"; index: number; seconds: number }
   | { kind: "stop" };
 
 export type SetlistEffect =
@@ -202,6 +203,8 @@ export function setlistReduce(
   switch (event.kind) {
     case "start":
       return start(setlist, event.seconds, event.from);
+    case "jump":
+      return start(setlist, event.seconds, event.index);
     case "stop":
       return { state: IDLE_SETLIST_RUN, effects: [] };
     case "advance":

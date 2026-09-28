@@ -24,6 +24,7 @@ interface ActionDispatcherArgs {
   prevTab: MutableRefObject<"beat" | "drill" | "setlist" | "jam">;
   /** Whether the setlist tab has one open — with none, there is nothing to start. */
   setlistLoaded: boolean;
+  onSetlistStep: (index: number) => void;
   /** Same for the jam tab, and the same reason: an empty stage starts nothing. */
   jamLoaded: boolean;
   /**
@@ -85,6 +86,7 @@ export function useActionDispatcher({
   setView,
   prevTab,
   setlistLoaded,
+  onSetlistStep,
   jamLoaded,
   jamEditorOpen,
   onToggleJam,
@@ -148,6 +150,20 @@ export function useActionDispatcher({
             // so the key that opens it has to work there too.
             if (view === "beat" || view === "drill" || view === "jam") toggleCard();
             break;
+        }
+        return;
+      }
+      if (actionId.startsWith("setlist-step-")) {
+        const stepNumber = Number(actionId.slice("setlist-step-".length));
+        const index = stepNumber - 1;
+
+        if (
+          setlistLoaded &&
+          Number.isInteger(index) &&
+          index >= 0 &&
+          index < 30
+        ) {
+          onSetlistStep(index);
         }
         return;
       }
@@ -320,6 +336,8 @@ export function useActionDispatcher({
     },
     [
       view,
+      setlistLoaded,
+      onSetlistStep,
       jamLoaded,
       jamEditorOpen,
       onToggleJam,
