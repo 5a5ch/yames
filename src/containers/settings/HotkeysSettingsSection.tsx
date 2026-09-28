@@ -91,7 +91,9 @@ export function HotkeysSettingsSection({
         if (items.length === 0) return null;
         return (
           <div key={group.key} className="hotkey-group">
-            <div className="hotkey-group-label">{t(`settings.hotkeys.groups.${group.key}`)}</div>
+            <div className="hotkey-group-label">
+              {t(`settings.hotkeys.groups.${group.key}`, { defaultValue: group.label })}
+            </div>
             <div className="hotkey-table">
               <div className="hotkey-table-header">
                 <span>{t("settings.hotkeys.actionHeader")}</span>
@@ -116,9 +118,13 @@ export function HotkeysSettingsSection({
                   <div key={hk.id} className="hotkey-row">
                     <span
                       className="hotkey-action"
-                      data-tooltip={t(`settings.hotkeys.descs.${hk.id}`)}
+                      data-tooltip={t(`settings.hotkeys.descs.${hk.id}`, {
+                        defaultValue: hk.desc,
+                      })}
                     >
-                      {t(`settings.hotkeys.actions.${hk.id}`)}
+                      {t(`settings.hotkeys.actions.${hk.id}`, {
+                        defaultValue: hk.action,
+                    })}
                     </span>
                     <button
                       className={`hotkey-bind-btn ${bindingFor?.id === hk.id && bindingFor.type === "key" ? "listening" : ""}`}

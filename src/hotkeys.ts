@@ -334,7 +334,7 @@ export const HOTKEYS: HotkeyEntry[] = [
 
     ...Array.from({ length: 30 }, (_, index): HotkeyEntry => ({
     id: `setlist-step-${index + 1}` as HotkeyAction,
-    action: `Setlist Step ${index + 1}`,
+    action: `Step ${index + 1} Start/Stop`,
     key: "",
     desc: `Start or stop setlist step ${index + 1}`,
     group: "setlist",
