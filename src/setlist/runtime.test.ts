@@ -556,6 +556,34 @@ describe("the count-in at the top of a setlist", () => {
   });
 });
 
+describe("jumping directly to a setlist step", () => {
+  it("switches immediately to the requested step and applies it", () => {
+    const setlist = setlistOf([
+      step("one", { kind: "manual" }),
+      step("two", { kind: "manual" }),
+      step("three", { kind: "manual" }),
+    ]);
+
+    const started = setlistReduce(setlist, IDLE_SETLIST_RUN, {
+      kind: "start",
+      seconds: 0,
+      from: 0,
+    });
+
+    const jumped = setlistReduce(setlist, started.state, {
+      kind: "jump",
+      index: 2,
+      seconds: 5,
+    });
+
+    expect(jumped.state.stepIndex).toBe(2);
+    expect(jumped.state.phase).toBe("switching");
+    expect(jumped.effects).toEqual([
+      { kind: "applyStep", index: 2, step: setlist.steps[2] },
+    ]);
+  });
+});
+
 describe("starting where you are looking", () => {
   const three = setlistOf([
     step("one", { kind: "bars", bars: 4 }),
